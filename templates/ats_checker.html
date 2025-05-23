@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pro ATS Checker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Using a CDN for a simple CSS Reset and a modern font -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="page-container">
+      
+
+      <main class="ats-checker-main">
+        <div class="form-card">
+          <h2>Check  Your Resume ATS Score </h2>
+          <p class="subtitle">
+            Upload your resume (PDF, DOCX, TXT) and provide the job description.
+          </p>
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="flash-messages-container">
+                {% for category, message in messages %}
+                  <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+
+          <form
+            action="{{ url_for('ats_checker_page') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="ats-form"
+          >
+            <div class="form-group">
+              <label for="resume">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20ZM8 12H16V14H8V12ZM8 16H13V18H8V16Z"></path></svg>
+                Upload Your Resume:
+              </label>
+              <input type="file" name="resume" id="resume" required />
+            </div>
+
+            <div class="form-group">
+              <label for="custom_job_description">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19.9999 11.9999L19.9999 3.99994C19.9999 3.44766 19.5522 2.99994 18.9999 2.99994L4.99994 2.99994C4.44766 2.99994 3.99994 3.44766 3.99994 3.99994L3.99994 19.9999C3.99994 20.5522 4.44766 20.9999 4.99994 20.9999L11.9999 20.9999L11.9999 19.9999L4.99994 19.9999L4.99994 3.99994L18.9999 3.99994L18.9999 11.9999H19.9999ZM8.49994 8.99994L8.49994 6.99994H15.4999L15.4999 8.99994H8.49994ZM8.49994 12.9999L8.49994 10.9999H15.4999L15.4999 12.9999H8.49994ZM8.49994 14.9999L8.49994 16.9999H11.4999L11.4999 14.9999H8.49994ZM22.1213 15.8786L18.9999 19.0001L15.8786 15.8786L15.1715 16.5857L18.2928 19.7071L15.1715 22.8284L15.8786 23.5355L18.9999 20.4142L22.1213 23.5355L22.8284 22.8284L19.7071 19.7071L22.8284 16.5857L22.1213 15.8786Z"></path></svg>
+                Paste Job Description (Recommended):
+              </label>
+              <textarea name="custom_job_description" id="custom_job_description" placeholder="Paste the full job description here for the most accurate analysis..."></textarea>
+            </div>
+            
+            <div class="form-group separator-text">
+              <span>OR</span>
+            </div>
+
+            <div class="form-group">
+              <label for="job_category">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
+                Select General Job Category (Fallback):
+              </label>
+              <select name="job_category" id="job_category">
+                <option value="">-- Select if not pasting full JD --</option>
+                {% for category in job_categories %}
+                <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="submit-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path></svg>
+                Analyze My Resume
+            </button>
+          </form>
+        </div>
+      </main>
+     
+    </div>
+  </body>
+</html>

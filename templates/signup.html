@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Signup | Placement System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+     <!-- Title Above the Login Form -->
+     <h1 class="site-title">Placement Recommendation System Using ML</h1>
+     <br> <br> <br> <br> <br> <br>
+     
+    <div class="container">
+        <h2>Signup</h2>
+        <form action="/signup" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="/">Login</a></p>
+        {% for message in get_flashed_messages() %}
+        <p class="error">{{ message }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

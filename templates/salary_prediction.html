@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .form-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .skills-section, .job-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .skills-checkboxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="salary-prediction-container">
+        <div class="salary-prediction-card">
+            <h1>Salary Prediction</h1>
+            <p class="subtitle">Predict your expected salary based on your professional details</p>
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form action="/salary-prediction" method="POST" class="salary-form" onsubmit="showLoading()">
+                <div class="form-columns">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="form-group">
+                            <label for="experience">Years of Experience:</label>
+                            <input type="number" id="experience" name="experience" min="0" max="50" value="5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company_rating">Company Rating (1-5):</label>
+                            <input type="number" id="company_rating" name="company_rating" min="1" max="5" step="0.1" value="3.5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="job_title">Job Role:</label>
+                            <select id="job_title" name="job_title" required>
+                                {% for role in job_roles %}
+                                    <option value="{{ role }}">{{ role }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="industry">Industry:</label>
+                            <select id="industry" name="industry" required>
+                                {% for industry in industries %}
+                                    <option value="{{ industry }}">{{ industry }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sector">Sector:</label>
+                            <select id="sector" name="sector" required>
+                                {% for sector in sectors %}
+                                    <option value="{{ sector }}">{{ sector }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+                        <div class="form-group">
+                            <label for="company_size">Company Size:</label>
+                            <select id="company_size" name="company_size" required>
+                                {% for size in company_sizes %}
+                                    <option value="{{ size }}">{{ size }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company_age">Company Age (years):</label>
+                            <input type="number" id="company_age" name="company_age" min="0" max="100" value="10" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="revenue">Company Revenue:</label>
+                            <select id="revenue" name="revenue" required>
+                                {% for rev in revenues %}
+                                    <option value="{{ rev }}">{{ rev }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Job Location:</label>
+                            <select id="location" name="location" required>
+                                {% for loc in locations %}
+                                    <option value="{{ loc }}">{{ loc }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="job_seniority">Seniority Level:</label>
+                            <select id="job_seniority" name="job_seniority" required>
+                                {% for level in seniorities %}
+                                    <option value="{{ level }}">{{ level }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="skills-section">
+                    <h3>Skills</h3>
+                    <div class="skills-checkboxes">
+                        <div class="form-check">
+                            <input type="checkbox" id="skills_python" name="skills_python" class="form-check-input">
+                            <label for="skills_python">Python</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="skills_aws" name="skills_aws" class="form-check-input">
+                            <label for="skills_aws">AWS</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="skills_spark" name="skills_spark" class="form-check-input">
+                            <label for="skills_spark">Spark</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="skills_excel" name="skills_excel" class="form-check-input">
+                            <label for="skills_excel">Excel</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Job Details -->
+                <div class="job-section">
+                    <h3>Additional Job Details</h3>
+                    <div class="form-columns">
+                        <div>
+                            <div class="form-group">
+                                <label for="num_comp">Number of Competitors:</label>
+                                <input type="number" id="num_comp" name="num_comp" min="0" max="10" value="2" required>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label for="desc_len">Job Description Length (chars):</label>
+                                <input type="number" id="desc_len" name="desc_len" min="0" max="5000" value="500" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="same_state" name="same_state" class="form-check-input">
+                        <label for="same_state">Company & Job in Same State</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="per_hour" name="per_hour" class="form-check-input">
+                        <label for="per_hour">Hourly Pay</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-predict" id="predict-button">
+                    <span id="button-text">Predict Salary</span>
+                    <span id="loading-spinner" class="hidden">Loading...</span>
+                </button>
+            </form>
+
+            <a href="/home" class="back-link">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function showLoading() {
+            const buttonText = document.getElementById('button-text');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const predictButton = document.getElementById('predict-button');
+
+            predictButton.disabled = true;
+            buttonText.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

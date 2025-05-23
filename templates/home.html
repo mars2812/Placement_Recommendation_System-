@@ -1,0 +1,164 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Placement System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+<body>
+    <header>
+        <h1 class="site-title">Placement Recommendation System Using ML</h1>
+        <nav>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/salary-prediction">Salary Prediction</a></li>
+                <li><a href="/resume-categorization">Resume Categorization</a></li>
+                <li><a href="/ats-checker">ATS Checker</a></li>
+                <li><a href="{{ url_for('review') }}">User Reviews</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <!-- Welcome Message Included Here -->
+                <h2>Welcome, {{ username }}</h2>
+                <p>Discover job opportunities, predict salaries, categorize resumes, and optimize them for ATS using Machine Learning.</p>
+
+                <h2>Your Dream Job Awaits</h2>
+                <p>Empowering job seekers with AI-driven tools to land the perfect job. Predict salaries, optimize resumes, and get matched with the right opportunities.</p>
+
+                <div class="hero-buttons">
+                    <a href="{{ url_for('getstart') }}" class="btn-cta">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2>What Our Top  Users Say</h2>
+        <div class="testimonial-cards">
+            <div class="testimonial-card">
+                <p>"This platform helped me predict my salary accurately and optimize my resume for ATS. Highly recommended!"</p>
+                <p class="author">- Mohammed Irfan Sufiyan </p>
+            </div>
+            <div class="testimonial-card">
+                <p>"The resume categorization feature saved me so much time. I got matched with the perfect job!"</p>
+                <p class="author">- Mohamed Rayyan Ahmed </p>
+            </div>
+            <div class="testimonial-card">
+                <p>"I landed my dream job thanks to the ATS checker. It's a game-changer!"</p>
+                <p class="author">- Mohammed Ayan </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats">
+        <h2>Our Impact in Numbers</h2>
+        <div class="stats-grid">
+            <div class="stat">
+                <h3 data-count="10000">20</h3>
+                <p>Users Registered</p>
+            </div>
+            <div class="stat">
+                <h3 data-count="95">50</h3>
+                <p>Resume Optimization Success Rate</p>
+            </div>
+            <div class="stat">
+                <h3 data-count="500">35</h3>
+                <p>Companies Trust Us</p>
+            </div>
+            <div class="stat">
+                <h3 data-count="4.8">35</h3>
+                <p>User Satisfaction Score</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3>How does the salary prediction work?</h3>
+                <p>Our salary prediction tool uses machine learning algorithms to analyze your skills, experience, and location to estimate your expected salary.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Is the ATS checker free to use?</h3>
+                <p>Yes, the ATS checker is completely free to use. Simply upload your resume, and we'll provide optimization tips.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I use this platform for any job industry?</h3>
+                <p>Absolutely! Our tools are designed to work across various industries and job roles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+        <h2 style="color: blue;">Ready to Get Started?</h2>
+
+        <p>Join thousands of users who have successfully landed their dream jobs using our platform.</p>
+    </section><br><br><br>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <!-- Authors Section -->
+            <div class="footer-section">
+                <h3>Authors</h3>
+                <ul class="profile-list">
+                    <li>
+                        <a href="https://www.linkedin.com/in/matrika-dhamala-770390200/">
+                            <img src="static/images/profile.jpg" alt="Matrika Dhamala" class="profile-pic">
+                            <span>Matrika Dhamala</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/rayyan28/">
+                            <img src="static/images/rayyan.jpg" alt="Rayyan Ahmed" class="profile-pic">
+                            <span>Rayyan Ahmed</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/mohammed-ayan-ab2149229/">
+                            <img src="static/images/ayan.jpg" alt="Mohammed Ayan" class="profile-pic">
+                            <span>Mohammed Ayan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/in/irfan-521524313/">
+                            <img src="static/images/irfan.jpg" alt="Irfan Sufiyan" class="profile-pic">
+                            <span>Irfan Sufiyan</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Social Links Section -->
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <ul class="social-links">
+                    <li><a href="#"><img src="{{ url_for('static', filename='images/facebook.png') }}" alt="Facebook"></a></li>
+                    <li><a href="#"><img src="{{ url_for('static', filename='images/twitter.png') }}" alt="Twitter"></a></li>
+                    <li><a href="#"><img src="{{ url_for('static', filename='images/linkedin.png') }}" alt="LinkedIn"></a></li>
+                    <li><a href="#"><img src="{{ url_for('static', filename='images/instagram.png') }}" alt="Instagram"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <p>&copy; 2024 Placement Recommendation System. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

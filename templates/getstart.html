@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | Placement System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='getstart.css') }}">
+</head>
+<body>
+
+    <!-- Hero Section for Get Started -->
+    <section class="getstarted-hero">
+        <div class="getstarted-container">
+            <h2>Welcome to Your Career Journey!</h2>
+            <p>Get started with AI-driven tools that help you predict salaries, optimize your resume, and get matched with the right job opportunities. Let's begin!</p>
+            <a href="/register" class="btn-cta">Sign Up Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Our Features</h2>
+        <div class="feature-card">
+            <h3>Salary Prediction</h3>
+            <p>Estimate your expected salary based on your skills, experience, and location.</p>
+            <a href="/salary-prediction" class="btn">Try Now</a>
+        </div>
+        <div class="feature-card">
+            <h3>Resume Categorization</h3>
+            <p>Automatically categorize your resume to match the right job profiles.</p>
+            <a href="/resume-categorization" class="btn">Try Now</a>
+        </div>
+        <div class="feature-card">
+            <h3>ATS Checker</h3>
+            <p>Optimize your resume to pass through Applicant Tracking Systems (ATS).</p>
+            <a href="/ats-checker" class="btn">Try Now</a>
+        </div>
+    </section>
+
+    <!-- Back to Home Button -->
+    <div class="back-to-home">
+        <a href="{{ url_for('home') }}" class="btn-cta">Get Started</a>
+    </div>
+
+    <!-- Footer -->
+
+
+</body>
+</html>

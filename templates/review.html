@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Your Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1 class="site-title">Submit Your Review</h1>
+    </header>
+
+    <section class="review-form">
+        <form method="POST" action="{{ url_for('review') }}">
+            <textarea name="review" rows="5" placeholder="Write your review here..." required></textarea>
+            <br>
+            <button type="submit">Submit Review</button>
+        </form>
+    </section>
+</body>
+</html>

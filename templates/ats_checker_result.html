@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATS Analysis Report - Pro ATS Checker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="page-container results-page">
+        
+
+        <main class="results-main-content">
+            <!-- Score Section -->
+            <section class="result-card score-card">
+                <div class="score-visual">
+                    <svg viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path class="circle"
+                            stroke-dasharray="{{ ats_score }}, 100"
+                            d="M18 2.0845
+                            a 15.9155 15.9155 0 0 1 0 31.831
+                            a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" class="percentage">{{ ats_score }}%</text>
+                    </svg>
+                    <div class="score-label">ATS Match Score</div>
+                </div><br>
+                <div class="score-interpretation">
+                    {% if ats_score >= 85 %}
+                        <p><strong>Excellent Match!</strong> Your resume aligns very well with the job requirements.</p>
+                    {% elif ats_score >= 70 %}
+                        <p><strong>Good Match!</strong> Your resume shows strong alignment. A few tweaks could make it even better.</p>
+                    {% elif ats_score >= 50 %}
+                        <p><strong>Fair Match.</strong> Your resume has potential but needs significant tailoring for this role.</p>
+                    {% else %}
+                        <p><strong>Needs Improvement.</strong> Your resume requires substantial revisions to better match the job requirements.</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <div class="grid-container">
+                <!-- Text Suggestions -->
+                {% if text_suggestions %}
+                <section class="result-card suggestions-card">
+                    <h2 class="card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20ZM11 15H13V17H11V15ZM11 7H13V13H11V7Z"></path></svg>
+                        Actionable Insights
+                    </h2>
+                    <ul class="suggestions-list">
+                        {% for tip in text_suggestions %}
+                        <li>{{ tip }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                {% endif %}
+
+                <!-- Keywords Analysis -->
+                <section class="result-card keywords-card">
+                    <h2 class="card-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M17.6569 15.5356L13.9999 11.8787L13.2929 12.5858L16.9499 16.2427C16.5907 16.793 16.0777 17.2313 15.4999 17.5L15.4999 20L13.4999 20L13.4999 17.5C11.6693 16.9807 10.3036 15.4082 9.90255 13.5H7.49994L7.49994 11.5H9.90255C10.3036 9.59184 11.6693 8.01934 13.4999 7.5L13.4999 5L15.4999 5L15.4999 7.5C16.0777 7.76871 16.5907 8.20703 16.9499 8.75739L20.4644 5.24261L21.8786 6.65682L18.3641 10.1716C18.7531 10.7073 18.9999 11.3335 18.9999 12C18.9999 12.6665 18.7531 13.2927 18.3641 13.8284L21.8786 17.3431L20.4644 18.7573L17.6569 15.5356ZM16.9999 12C16.9999 10.3431 15.6568 9 13.9999 9C12.3431 9 10.9999 10.3431 10.9999 12C10.9999 13.6569 12.3431 15 13.9999 15C15.6568 15 16.9999 13.6569 16.9999 12Z"></path></svg>
+                        Keywords Breakdown
+                    </h2>
+                    {% if matched_keywords %}
+                        <div class="keyword-subsection">
+                            <h4><span class="status-dot matched"></span>Matched Keywords (from Job Description):</h4>
+                            <div class="keyword-tags">
+                            {% for keyword in matched_keywords %}<span>{{ keyword }}</span>{% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if missing_job_description_keywords %}
+                        <div class="keyword-subsection">
+                            <h4><span class="status-dot missing"></span>Keywords from this Job Description to Consider:</h4>
+                            <div class="keyword-tags">
+                            {% for keyword in missing_job_description_keywords[:10] %}<span>{{ keyword }}</span>{% endfor %}
+                            {% if missing_job_description_keywords|length > 10 %}<span class="more-keywords">... and more</span>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if missing_core_role_keywords %}
+                        <div class="keyword-subsection">
+                            <h4><span class="status-dot critical"></span>Essential Keywords for a {{ analyzed_category_name }} Role to Consider:</h4>
+                            <div class="keyword-tags">
+                            {% for keyword in missing_core_role_keywords[:15] %}<span>{{ keyword }}</span>{% endfor %}
+                            {% if missing_core_role_keywords|length > 15 %}<span class="more-keywords">... and more</span>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if not matched_keywords and not missing_job_description_keywords and not missing_core_role_keywords %}
+                        <p class="no-keywords-msg">Keyword analysis did not yield specific matches or misses. Focus on the general improvement tips.</p>
+                    {% endif %}
+                </section>
+
+            <!-- Video Suggestions Section -->
+            {% if video_suggestions_list %}
+            <section class="result-card video-gallery-card">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM10.6793 15.4401L15.7579 12.2649C16.0124 12.1028 16.0124 11.8972 15.7579 11.7351L10.6793 8.55989C10.4164 8.39221 10.0786 8.59553 10.0786 8.90576V15.0942C10.0786 15.4045 10.4164 15.6078 10.6793 15.4401Z"></path></svg>
+                    Video Learning Hub
+                </h2>
+                <div class="video-grid">
+                    {% for video in video_suggestions_list %}
+                    <div class="video-item">
+                        <div class="video-embed-wrapper">
+                            <iframe
+                                src="https://www.youtube.com/embed/{{ video.id }}"
+                                title="{{ video.title }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                        <h4 class="video-title">{{ video.title }}</h4>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% elif ats_score < 98 %}
+            <section class="result-card video-gallery-card">
+                 <h2 class="card-title">Video Learning Hub</h2>
+                <p class="no-videos-message">
+                    While we don't have specific videos for this exact scenario, general resume advice can be very helpful!
+                    Try searching YouTube for "resume tips for {{ analyzed_category_name }}" or "how to improve resume score".
+                </p>
+            </section>
+            {% endif %}
+
+            <!-- Contact Info (Optional Section) -->
+            <section class="result-card contact-info-card">
+                 <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M2 4C2 3.44772 2.44772 3 3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4ZM20 5H4V19H20V5ZM6 7H8V9H6V7ZM10 7H18V9H10V7ZM6 11H8V13H6V11ZM10 11H18V13H10V11ZM6 15H8V17H6V15ZM10 15H18V17H10V15Z"></path></svg>
+                    Extracted Contact
+                </h2>
+                <p><strong>Email:</strong> {{ contact_info['Email'] }}</p>
+                <p><strong>Phone:</strong> {{ contact_info['Phone'] }}</p>
+                <p class="disclaimer"><small><em>(Verify accuracy. Extracted based on common patterns.)</em></small></p>
+            </section>
+
+            <div class="back-button-container">
+                <a href="{{ url_for('ats_checker_page') }}" class="button-primary back-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M7.82843 10.9999H20V12.9999H7.82843L13.1924 18.3638L11.7782 19.778L4 11.9999L11.7782 4.22168L13.1924 5.63589L7.82843 10.9999Z"></path></svg>
+                    Analyze Another Resume
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

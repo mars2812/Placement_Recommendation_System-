@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .result-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .salary-prediction-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .input-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .input-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .input-item {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .highlight {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .salary-result {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .salary-result p {
+            font-size: 18px;
+            margin: 0;
+        }
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .skill-tag {
+            background: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-message {
+            color: #e74c3c;
+            background: #fde8e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <div class="salary-prediction-card">
+            <h1>Salary Prediction Result</h1>
+
+            {% if error %}
+                <p class="error-message">Error: {{ error }}</p>
+            {% else %}
+                <!-- Predicted Salary -->
+                <div class="result-section">
+                    <h2>Your Predicted Salary</h2>
+                    <div class="salary-result">
+                        <p>Expected Annual Salary: <span class="highlight">{{ predicted_salary }}</span></p>
+                    </div>
+                </div>
+
+                <!-- Input Summary -->
+                <div class="input-summary">
+                    <h3>Your Input Details</h3>
+                    <div class="input-details">
+                        <div>
+                            <p class="input-item"><span class="highlight">Job Role:</span> {{ input_data['Job Title'] }}</p>
+                            <p class="input-item"><span class="highlight">Experience:</span> {{ input_data['Years of Experience'] }} years</p>
+                            <p class="input-item"><span class="highlight">Seniority:</span> {{ input_data['Seniority'] }}</p>
+                            <p class="input-item"><span class="highlight">Location:</span> {{ input_data['job_state'] }}</p>
+                        </div>
+                        <div>
+                            <p class="input-item"><span class="highlight">Company:</span> {{ input_data['Size'] }} ({{ input_data['Company Age'] }} yrs)</p>
+                            <p class="input-item"><span class="highlight">Rating:</span> {{ input_data['Rating'] }}/5</p>
+                            <p class="input-item"><span class="highlight">Industry:</span> {{ input_data['Industry'] }}</p>
+                            <p class="input-item"><span class="highlight">Revenue:</span> {{ input_data['Revenue'] }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Skills -->
+                    <h4 style="margin-top: 15px;">Skills:</h4>
+                    <div class="skills-list">
+                        {% if input_data['Python_yn'] == 1 %}<span class="skill-tag">Python</span>{% endif %}
+                        {% if input_data['AWS_yn'] == 1 %}<span class="skill-tag">AWS</span>{% endif %}
+                        {% if input_data['Spark'] == 1 %}<span class="skill-tag">Spark</span>{% endif %}
+                        {% if input_data['Excel_yn'] == 1 %}<span class="skill-tag">Excel</span>{% endif %}
+                        {% if input_data['Same State'] == 1 %}<span class="skill-tag">Local Company</span>{% endif %}
+                        {% if input_data['PerHour'] == 1 %}<span class="skill-tag">Hourly Pay</span>{% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <a href="/salary-prediction" class="back-link">← Make Another Prediction</a>
+        </div>
+    </div>
+</body>
+</html>

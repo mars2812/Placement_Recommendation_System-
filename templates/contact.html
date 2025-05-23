@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Support</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="contact-wrapper">
+        <div class="contact-container">
+            <!-- Left Side - Decorative -->
+            <div class="contact-hero">
+                <div class="hero-content">
+                    <h2>We're Here to Help!</h2>
+                    <p>Have questions about job recommendations or need assistance? Our team is ready to help you with your career journey.</p>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span>support@jobconnect.com</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <span>+1 (800) 123-4567</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>San Francisco, CA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Form -->
+            <div class="contact-form-container">
+                {% if success %}
+                <div class="success-message">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Thank you, {{ name }}!</h3>
+                    <p>Your message has been received. We'll contact you within 24 hours.</p>
+                    <a href="/" class="home-link">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+                {% else %}
+                <h1>Contact Us</h1>
+                <form method="POST" class="contact-form">
+                    <div class="form-group floating">
+                        <input type="text" id="name" name="name" required>
+                        <label for="name">Your Name</label>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    
+                    <div class="form-group floating">
+                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email Address</label>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

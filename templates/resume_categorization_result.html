@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Categorization Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="resume-categorization-container">
+      <div class="resume-categorization-card">
+        <h1>Resume Categorization Result</h1>
+
+        <!-- Predicted Category -->
+        <div class="result-section">
+          <h2>Predicted Job Category:</h2>
+          {% for cat, score in top_categories %}
+          <strong>{{ cat }}</strong>
+          {% endfor %}
+        </div>
+
+        <!-- Job Recommendations -->
+        <div class="job-recommendations">
+          <h2>Recommended Jobs for "{{ top_categories[0][0] }}":</h2>
+          <div id="jobResults">
+            <p>Loading jobs...</p>
+          </div>
+        </div>
+
+        <!-- Resume Text -->
+        <div class="resume-text-section">
+          <h2>Extracted Resume Text:</h2>
+          <textarea readonly>{{ resume_text }}</textarea>
+        </div>
+
+        <a href="/resume-categorization" class="back-link">Back to Resume Categorization</a>
+      </div>
+    </div>
+
+    <!-- Updated JavaScript -->
+    <script>
+      const category = "{{ top_categories[0][0] }}";
+      
+     async function fetchJobs() {
+    const jobResults = document.getElementById("jobResults");
+    
+    // Show loading state
+    jobResults.innerHTML = `
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Searching for ${category} jobs...</p>
+        </div>
+    `;
+
+    try {
+        // Add timeout to fetch request
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const response = await fetch(`/api/jobs?query=${encodeURIComponent(category)}`, {
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        if (!data.jobs || data.jobs.length === 0) {
+            showNoResults(category);
+            return;
+        }
+
+        displayJobs(data.jobs, data.source);
+        
+    } catch (error) {
+        console.error("Fetch error:", error);
+        
+        // Determine error type
+        if (error.name === 'AbortError') {
+            showErrorState('timeout');
+        } else if (error.message.includes('Failed to fetch')) {
+            showErrorState('connection');
+        } else if (error.message.includes('429')) {
+            showErrorState('rate-limit');
+        } else {
+            showErrorState('generic');
+        }
+    }
+}
+
+// Helper function for empty results
+function showNoResults(category) {
+    const broaderTerm = getBroadTerm(category);
+    document.getElementById("jobResults").innerHTML = `
+        <div class="no-results">
+            <h3>No jobs found for "${category}"</h3>
+            <div class="suggestions">
+                <p>Try these alternatives:</p>
+                <ul>
+                    <li><a href="#" onclick="refineSearch('${broaderTerm}')">Search for "${broaderTerm}" instead</a></li>
+                    <li><a href="#" onclick="toggleLocationFilter()">Expand location filters</a></li>
+                </ul>
+            </div>
+            <button class="retry-btn" onclick="fetchJobs()">
+                <i class="refresh-icon"></i> Try Again
+            </button>
+        </div>
+    `;
+}
+
+// Helper function for error state
+function showErrorState(errorType) {
+    const errorMessages = {
+        'connection': {
+            title: 'Connection Error',
+            message: 'We couldn\'t connect to our job database.',
+            instructions: 'Please check your internet connection and try again.'
+        },
+        'timeout': {
+            title: 'Request Timeout',
+            message: 'The server is taking too long to respond.',
+            instructions: 'Please try again in a few moments.'
+        },
+        'rate-limit': {
+            title: 'Service Limit Reached',
+            message: 'We\'ve hit our daily limit for job searches.',
+            instructions: 'Please try again tomorrow or contact support.'
+        },
+        'generic': {
+            title: 'Something Went Wrong',
+            message: 'We encountered an unexpected error.',
+            instructions: 'Our team has been notified. Please try again later.'
+        }
+    };
+
+    const { title, message, instructions } = errorMessages[errorType] || errorMessages['generic'];
+    
+    document.getElementById("jobResults").innerHTML = `
+        <div class="error-state">
+            <div class="error-header">
+                <span class="error-icon">⚠️</span>
+                <h3>${title}</h3>
+            </div>
+            <div class="error-body">
+                <p>${message}</p>
+                <p class="instructions">${instructions}</p>
+                
+                <div class="error-actions">
+                    <button onclick="fetchJobs()" class="retry-btn">
+                        <i class="refresh-icon"></i> Try Again
+                    </button>
+                    <button onclick="showAlternativeOptions()" class="alt-options-btn">
+                        Alternative Options
+                    </button>
+                </div>
+                
+                <div id="alternativeOptions" class="hidden">
+                    <p>You can also try:</p>
+                    <ul class="alt-options-list">
+                        <li><a href="https://www.linkedin.com/jobs/" target="_blank">Search on LinkedIn</a></li>
+                        <li><a href="https://www.indeed.com/" target="_blank">Search on Indeed</a></li>
+                        <li><a href="/contact">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+}
+// Helper function to toggle alternative options
+function showAlternativeOptions() {
+    const optionsDiv = document.getElementById("alternativeOptions");
+    optionsDiv.classList.toggle("hidden");
+}
+
+// Helper function to refine search
+function refineSearch(newTerm) {
+    category = newTerm;
+    fetchJobs();
+}
+
+      function displayJobs(jobs, source) {
+        const jobList = jobs.map(job => `
+          <div class="job-item">
+            <h3>
+              <a href="${job.job_apply_link || job.url}" target="_blank">
+                ${job.job_title || job.title}
+              </a>
+              <small>(${source})</small>
+            </h3>
+            <p>${job.employer_name || job.company || "Company not specified"} • ${job.job_country || "Remote"}</p>
+          </div>
+        `).join('');
+        
+        document.getElementById("jobResults").innerHTML = jobList;
+      }
+
+      // Fallback for niche categories
+      function getBroadTerm(category) {
+        const broadTerms = {
+          "Data Scientist": "Data",
+          "Machine Learning Engineer": "AI",
+          "Frontend Developer": "Web Developer"
+        };
+        return broadTerms[category] || category.split(" ")[0];
+      }
+
+      // Fetch jobs on page load
+      window.onload = fetchJobs;
+      // Add this inside your existing fetchJobs() function
+async function displaySalaryInfo(category) {
+  const salaryResponse = await fetch(`/api/salary?job_title=${encodeURIComponent(category)}`);
+  const salaryData = await salaryResponse.json();
+  
+  if (salaryData.status === "success") {
+    const salarySection = document.createElement('div');
+    salarySection.innerHTML = `
+      <h3>Salary Range for ${category}:</h3>
+      <p>$${salaryData.data.min_salary} - $${salaryData.data.max_salary} (Median: $${salaryData.data.median_salary})</p>
+    `;
+    document.querySelector('.result-section').appendChild(salarySection);
+  }
+}
+
+// Call it when showing results
+window.onload = async function() {
+  await fetchJobs();
+  await displaySalaryInfo("{{ top_categories[0][0] }}"); 
+};
+    </script>
+  </body>
+</html>

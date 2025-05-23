@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Categorization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="resume-categorization-container">
+        <div class="resume-categorization-card">
+            <h1>Resume Categorization</h1>
+            <p class="subtitle">Upload your resume (PDF, DOCX, TXT) to get the job category.</p>
+
+            <!-- Form for file upload -->
+            <form action="/resume-categorization" method="POST" enctype="multipart/form-data" class="resume-form">
+                <div class="form-group">
+                    <label for="resume">Upload Resume:</label>
+                    <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt" required>
+                </div>
+
+                <button type="submit" class="btn-predict">Categorize Resume</button>
+            </form>
+
+            <!-- Link to go back to the home page -->
+            <a href="/home" class="back-link">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
