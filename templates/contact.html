@@ -19,15 +19,15 @@
                     <div class="contact-methods">
                         <div class="contact-method">
                             <i class="fas fa-envelope"></i>
-                            <span>support@jobconnect.com</span>
+                            <span>dhamalamilan4242@gmail.com</span>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-phone"></i>
-                            <span>+1 (800) 123-4567</span>
+                            <span>+91 7892990358</span>
                         </div>
                         <div class="contact-method">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>San Francisco, CA</span>
+                            <span>Bangalore, India </span>
                         </div>
                     </div>
                 </div>
@@ -48,28 +48,29 @@
                 </div>
                 {% else %}
                 <h1>Contact Us</h1>
-                <form method="POST" class="contact-form">
-                    <div class="form-group floating">
-                        <input type="text" id="name" name="name" required>
-                        <label for="name">Your Name</label>
-                        <i class="fas fa-user"></i>
-                    </div>
-                    
-                    <div class="form-group floating">
-                        <input type="email" id="email" name="email" required>
-                        <label for="email">Email Address</label>
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">Your Message</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        <i class="fas fa-paper-plane"></i> Send Message
-                    </button>
-                </form>
+                <form method="POST" action="/submit">
+  <div class="form-group floating">
+      <input type="text" id="name" name="name" required>
+      <label for="name">Your Name</label>
+      <i class="fas fa-user"></i>
+  </div>
+  
+  <div class="form-group floating">
+      <input type="email" id="email" name="email" required>
+      <label for="email">Email Address</label>
+      <i class="fas fa-envelope"></i>
+  </div>
+  
+  <div class="form-group">
+      <label for="message">Your Message</label>
+      <textarea id="message" name="message" rows="5" required></textarea>
+  </div>
+  
+  <button type="submit" class="submit-btn">
+      <i class="fas fa-paper-plane"></i> Send Message
+  </button>
+</form>
+
                 {% endif %}
             </div>
         </div>

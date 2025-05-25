@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, jsonify, render_template, request, redirect, session, flash
 import mysql.connector
 from sentence_transformers import SentenceTransformer, util
 import pandas as pd
@@ -20,7 +20,6 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 import sqlite3
-from sentence_transformers import SentenceTransformer, util
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import mean_absolute_error, r2_score
@@ -44,16 +43,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///contacts.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-class ContactSubmission(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Create tables (run once)
-with app.app_context():
-    db.create_all()
 app.secret_key = 'your_secret_key'
 RAPIDAPI_KEY = "236228e410msh8d0f311c7a27b96p1d8798jsnb950f7eb8259"  # Replace with your key
 JSEARCH_HEADERS = {
@@ -93,16 +83,16 @@ if conn:
         );
     ''')
 
-    # ✅ Create Contact Submissions Table (converted from SQLAlchemy model)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS contact_submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS contact_form (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
             message TEXT NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+            submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-    ''')
+    """)
 
     conn.commit()
     cursor.close()
@@ -601,7 +591,7 @@ def review():
         finally:
             conn.close()
 
-        return redirect('/home')
+        return redirect('/home', username=session['user'])
 
     return render_template('review.html')
 
@@ -904,16 +894,24 @@ def contact_support():
                        success=False)
 
 
-@app.route('/admin/contacts')
-def view_contacts():
-    submissions = ContactSubmission.query.order_by(ContactSubmission.created_at.desc()).all()
-    return render_template('admin/contacts.html', submissions=submissions)
 
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     flash("Logged out successfully!", "success")
     return redirect('/')
+@app.route("/submit", methods=["POST"])
+def submit_form():
+    name = request.form["name"]
+    email = request.form["email"]
+    message = request.form["message"]
+    conn = connect_db()
+    cursor = conn.cursor()
+    query = "INSERT INTO contact_form (name, email, message) VALUES (?, ?, ?)"
+    values = (name, email, message)
+    cursor.execute(query, values)
+    conn.commit()
 
+    return redirect("/home", username=session['user'])  # or render a success page
 if __name__ == '__main__':
     app.run(debug=True)

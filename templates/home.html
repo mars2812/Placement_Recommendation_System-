@@ -7,10 +7,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        .logout-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: red;
+      color: white;
+      border-radius: 50%;
+      width: 60px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .logout-button:hover {
+      background-color: darkred;
+    }
+</style>
 </head>
 <body>
     <header>
-        <h1 class="site-title">Placement Recommendation System Using ML</h1>
+        <h1 class="site-title">Placement Recommendation System Using ML</h1><a href="/logout" class="logout-button">Logout</a>
         <nav>
             <ul>
                 <li><a href="/home">Home</a></li>
@@ -18,7 +40,7 @@
                 <li><a href="/resume-categorization">Resume Categorization</a></li>
                 <li><a href="/ats-checker">ATS Checker</a></li>
                 <li><a href="{{ url_for('review') }}">User Reviews</a></li>
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="/contact">Contact</a></li>
             </ul>
         </nav>
     </header>

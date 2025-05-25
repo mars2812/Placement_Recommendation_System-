@@ -240,7 +240,7 @@ nav ul li a {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 60vh; /* Adjust height */
+    height: 80vh; /* Adjust height */
     background: linear-gradient(to right, #007bff53, #00b39b); /* Gradient background */
     color: white;
     text-align: center;
@@ -248,7 +248,7 @@ nav ul li a {
 }
 
 .hero-container {
-    max-width: 700px;
+    max-width: 1000px;
     padding: 20px;
 }
 
@@ -2186,7 +2186,7 @@ body {
 }
 
 .hero-content {
-    max-width: 400px;
+    max-width: 700px;
 }
 
 .contact-hero h2 {
