@@ -913,5 +913,7 @@ def submit_form():
     conn.commit()
 
     return redirect("/home", username=session['user'])  # or render a success page
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 10000)) 
+    app.run(host="0.0.0.0", port=port)
